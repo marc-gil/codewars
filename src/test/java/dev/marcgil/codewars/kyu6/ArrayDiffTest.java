@@ -1,6 +1,6 @@
 package dev.marcgil.codewars.kyu6;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Random;
 import java.util.stream.IntStream;

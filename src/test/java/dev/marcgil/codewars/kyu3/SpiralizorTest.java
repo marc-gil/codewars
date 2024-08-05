@@ -6,10 +6,7 @@ import static java.util.stream.IntStream.rangeClosed;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-@TestInstance(Lifecycle.PER_CLASS)
 class SpiralizorTest {
 
   @Test
@@ -40,7 +37,6 @@ class SpiralizorTest {
       }
       return ary;
     }
-
   }
 
 }
