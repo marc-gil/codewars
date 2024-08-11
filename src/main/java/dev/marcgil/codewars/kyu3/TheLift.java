@@ -90,14 +90,14 @@ public class TheLift {
   private static class Lift {
 
     private final int capacity;
+    private final List<Integer> floorHistoric;
+    private final List<Integer> passengers;
     private Direction direction;
     private int currentFloor;
     private int[][] queues;
-    private final List<Integer> floorHistoric;
-    private final List<Integer> passengers;
 
     enum Direction {
-      UP, DOWN;
+      UP, DOWN
     }
 
     public Lift(int capacity) {
@@ -113,7 +113,7 @@ public class TheLift {
       do {
         if (hasToStopAtThisFloor(currentFloor)) {
           getPassengersOut(currentFloor);
-          calculateNextDirection(queues);
+          calculateNextDirection();
           addPassengers(queues[currentFloor]);
           addFloorToHistoric(currentFloor);
         }
@@ -129,7 +129,49 @@ public class TheLift {
       return floorHistoric.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    private void calculateNextDirection(int[][] queues) {
+    private boolean hasToStopAtThisFloor(int actualFloor) {
+      return floorHasEnteringPeople(actualFloor) || passengerRequestedThisFloor(actualFloor)
+          || actualFloor == 0;
+    }
+
+    private boolean floorHasEnteringPeople(int actualFloor) {
+      return switch (direction) {
+        case UP -> queueIsNotEmpty(actualFloor) && (someoneRequestedToGoUp(actualFloor) ||
+            (isHighestFloorWithPeopleWaiting(actualFloor) && passengers.isEmpty()));
+        case DOWN -> queueIsNotEmpty(actualFloor) && (someoneRequestedToGoDown(actualFloor) ||
+            (isLowestFloorWithPeopleWaiting(actualFloor) && passengers.isEmpty()));
+      };
+    }
+
+    private boolean queueIsNotEmpty(int actualFloor) {
+      return getFloorQueue(actualFloor).length > 0;
+    }
+
+    private boolean someoneRequestedToGoUp(int actualFloor) {
+      return IntStream.of(getFloorQueue(actualFloor))
+          .anyMatch(requestedFloor -> requestedFloor > actualFloor);
+    }
+
+    private boolean isHighestFloorWithPeopleWaiting(int actualFloor) {
+      return !someoneFromHigherFloorRequestedElevator(actualFloor);
+    }
+
+    private boolean someoneRequestedToGoDown(int actualFloor) {
+      return IntStream.of(getFloorQueue(actualFloor))
+          .anyMatch(requestedFloor -> requestedFloor < actualFloor);
+    }
+
+    private boolean isLowestFloorWithPeopleWaiting(int actualFloor) {
+      return !someoneFromLowerFloorRequestedElevator(actualFloor);
+    }
+
+    private void getPassengersOut(int actualFloor) {
+      while (passengers.contains(actualFloor)) {
+        passengers.remove(Integer.valueOf(actualFloor));
+      }
+    }
+
+    private void calculateNextDirection() {
       if (isLiftEmpty()) { //If it's not empty we keep same direction
         switch (direction) {
           case UP -> {
@@ -165,11 +207,6 @@ public class TheLift {
       return queue[0] > actualFloor ? Direction.UP : Direction.DOWN;
     }
 
-    private boolean hasToStopAtThisFloor(int actualFloor) {
-      return floorHasEnteringPeople(actualFloor) || passengerRequestedThisFloor(actualFloor)
-          || actualFloor == 0;
-    }
-
     private void addFloorToHistoric(int actualFloor) {
       floorHistoric.add(actualFloor);
     }
@@ -192,54 +229,12 @@ public class TheLift {
       return false;
     }
 
-    private void getPassengersOut(int actualFloor) {
-      while (passengers.contains(actualFloor)) {
-        passengers.remove(Integer.valueOf(actualFloor));
-      }
-    }
-
     private boolean passengerRequestedThisFloor(int actualFloor) {
       return passengers.contains(actualFloor);
     }
 
-    private boolean floorHasEnteringPeople(int actualFloor) {
-      return switch (direction) {
-        case UP -> queueIsNotEmpty(actualFloor) && (someoneRequestedToGoUp(actualFloor) ||
-            (isHighestFloorWithPeopleWaiting(actualFloor) && passengers.isEmpty()));
-        case DOWN -> queueIsNotEmpty(actualFloor) && (someoneRequestedToGoDown(actualFloor) ||
-            (isLowestFloorWithPeopleWaiting(actualFloor) && passengers.isEmpty()));
-      };
-    }
-
-    private boolean queueIsNotEmpty(int actualFloor) {
-      return getFloorQueue(actualFloor).length > 0;
-    }
-
     private int[] getFloorQueue(int actualFloor) {
       return queues[actualFloor];
-    }
-
-    private boolean isLowestFloorWithPeopleWaiting(int actualFloor) {
-      for (int[] queue : Arrays.asList(queues).subList(0, actualFloor)) {
-        if (queue.length != 0) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    private boolean someoneRequestedToGoDown(int actualFloor) {
-      return IntStream.of(getFloorQueue(actualFloor))
-          .anyMatch(requestedFloor -> requestedFloor < actualFloor);
-    }
-
-    private boolean isHighestFloorWithPeopleWaiting(int actualFloor) {
-      return Arrays.stream(queues).skip(actualFloor + 1).noneMatch(queue -> queue.length != 0);
-    }
-
-    private boolean someoneRequestedToGoUp(int actualFloor) {
-      return IntStream.of(getFloorQueue(actualFloor))
-          .anyMatch(requestedFloor -> requestedFloor > actualFloor);
     }
 
     private boolean isBuildingQueueEmpty() {
