@@ -191,7 +191,6 @@ public class Inspector {
   private String wantedCriminal;
 
   public void receiveBulletin(String bulletin) {
-    System.out.println("bulletin: " + bulletin);
     String[] updateStatements = bulletin.split("\n");
     for (String updateStatement : updateStatements) {
       if (updateStatement.startsWith(ALLOW_CITIZENS_BULLETIN_START) ||
@@ -309,11 +308,6 @@ public class Inspector {
   }
 
   public String inspect(Map<String, String> person) {
-    System.out.println("person:");
-    for (Entry<String, String> entry : person.entrySet()) {
-      System.out.println(entry.getKey() + ": " + entry.getValue());
-    }
-
     Passport passport = null;
     if (person.containsKey("passport")) {
       passport = Passport.of(person.get("passport"));
