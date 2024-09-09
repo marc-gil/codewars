@@ -4,11 +4,6 @@ Here, I post my codewars solutions to various Codewars katas, implemented in Jav
 The repository is structured to include both the solution and the corresponding test cases.
 
 ***Codewarriors are strongly encouraged not to look at my Kata's solutions until trying to solve it themselves***
-
-## Table of Contents
-
-- [About](https://github.com/marc-gil/codewars/edit/main/README.md#about)
-- [Repository Structure](https://github.com/marc-gil/codewars/edit/main/README.md#repository-structure)
   
 ## About
 [Codewars](https://codewars.com) is a platform for developers to train their coding skills by solving challenges called "katas." 
