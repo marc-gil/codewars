@@ -3,6 +3,8 @@
 Here, I post my codewars solutions to various Codewars katas, implemented in Java. 
 The repository is structured to include both the solution and the corresponding test cases.
 
+***Codewarriors are strongly encouraged not to look at my Kata's solutions until trying to solve it themselves***
+
 ## Table of Contents
 
 - [About](https://github.com/marc-gil/codewars/edit/main/README.md#about)
